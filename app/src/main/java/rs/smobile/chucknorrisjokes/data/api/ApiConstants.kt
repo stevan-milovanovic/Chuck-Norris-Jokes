@@ -16,6 +16,10 @@ object ApiConstants {
     const val UNAUTHORIZED_HTTP_RESPONSE_STATUS_CODE = 401
     const val UNAUTHORIZED_ERROR_MESSAGE = "You're not authorized to see jokes about Chuck Norris."
 
+    const val FORBIDDEN_HTTP_RESPONSE_STATUS_CODE = 403
+    const val FORBIDDEN_ERROR_MESSAGE = "You are banned from accessing Chuck Norris jokes.\n\n" +
+            "You should verify that you have set a valid API key."
+
     const val TOO_MANY_REQUESTS_HTTP_RESPONSE_STATUS_CODE = 429
     const val TOO_MANY_REQUESTS_ERROR_MESSAGE = "You're sending too many requests, let me breath."
 

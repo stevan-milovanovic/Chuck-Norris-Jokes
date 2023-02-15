@@ -21,7 +21,11 @@ import androidx.compose.ui.tooling.preview.Devices.PIXEL_4
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.microsoft.appcenter.AppCenter
+import com.microsoft.appcenter.analytics.Analytics
+import com.microsoft.appcenter.crashes.Crashes
 import dagger.hilt.android.AndroidEntryPoint
+import rs.smobile.chucknorrisjokes.analytics.AnalyticsConstants.APP_CENTER_API_KEY
 import rs.smobile.chucknorrisjokes.data.api.model.Joke
 import rs.smobile.chucknorrisjokes.ui.theme.ChuckNorrisJokesTheme
 
@@ -30,6 +34,9 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        AppCenter.start(application, APP_CENTER_API_KEY, Analytics::class.java, Crashes::class.java)
+
         setContent {
             val viewModel = viewModel(modelClass = MainViewModel::class.java)
             val uiState by viewModel.uiState.collectAsState()

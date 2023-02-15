@@ -1,5 +1,7 @@
 package rs.smobile.chucknorrisjokes.data.repository
 
+import rs.smobile.chucknorrisjokes.data.api.ApiConstants.FORBIDDEN_ERROR_MESSAGE
+import rs.smobile.chucknorrisjokes.data.api.ApiConstants.FORBIDDEN_HTTP_RESPONSE_STATUS_CODE
 import rs.smobile.chucknorrisjokes.data.api.ApiConstants.GENERAL_SERVER_ERROR
 import rs.smobile.chucknorrisjokes.data.api.ApiConstants.TOO_MANY_REQUESTS_ERROR_MESSAGE
 import rs.smobile.chucknorrisjokes.data.api.ApiConstants.TOO_MANY_REQUESTS_HTTP_RESPONSE_STATUS_CODE
@@ -22,6 +24,9 @@ class JokeRepository @Inject constructor(
                 when (response.code()) {
                     UNAUTHORIZED_HTTP_RESPONSE_STATUS_CODE -> Resource.Error(
                         UNAUTHORIZED_ERROR_MESSAGE
+                    )
+                    FORBIDDEN_HTTP_RESPONSE_STATUS_CODE -> Resource.Error(
+                        FORBIDDEN_ERROR_MESSAGE
                     )
                     TOO_MANY_REQUESTS_HTTP_RESPONSE_STATUS_CODE -> Resource.Error(
                         TOO_MANY_REQUESTS_ERROR_MESSAGE
