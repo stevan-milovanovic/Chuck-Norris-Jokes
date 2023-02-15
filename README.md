@@ -12,3 +12,8 @@
 - [Flow](https://developer.android.com/kotlin/flow)
 - [Retrofit](https://square.github.io/retrofit/)
 - [Moshi](https://github.com/square/moshi)
+
+
+### Build status:
+
+[![Build status](https://build.appcenter.ms/v0.1/apps/13d53f5e-1ae4-496e-bdf8-0a5e7c80c8c2/branches/dev/badge)](https://appcenter.ms)
