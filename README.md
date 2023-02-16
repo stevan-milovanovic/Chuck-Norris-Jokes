@@ -16,4 +16,4 @@
 
 ### Build status:
 
-[![Build status](https://build.appcenter.ms/v0.1/apps/13d53f5e-1ae4-496e-bdf8-0a5e7c80c8c2/branches/dev/badge)](https://appcenter.ms)
+[![Build status](https://build.appcenter.ms/v0.1/apps/eb4061d9-a314-4b4e-8550-679cdbd13862/branches/dev/badge)](https://appcenter.ms)
