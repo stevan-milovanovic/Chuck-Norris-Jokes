@@ -5,6 +5,13 @@ plugins {
     id 'com.google.dagger.hilt.android'
 }
 
+def appProperties = new Properties()
+
+if (rootProject.file("app-settings.properties").exists()) {
+    def appPropertiesFile = rootProject.file("app-settings.properties")
+    appProperties.load(new FileInputStream(appPropertiesFile))
+}
+
 android {
     namespace 'rs.smobile.chucknorrisjokes'
     compileSdk 33
@@ -19,6 +26,19 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary true
+        }
+        def appCenterBuild = System.getenv("APP_CENTER_BUILD")
+
+        if (appCenterBuild != null) {
+            buildConfigField ("boolean", "APP_CENTER_BUILD", "${appCenterBuild}" ?: "false")
+        }
+
+        if (appCenterBuild) {
+            buildConfigField("String", "API_KEY_HEADER_VALUE", "\"${System.getenv("API_KEY_HEADER_VALUE")}\"")
+            buildConfigField("String", "APP_CENTER_API_KEY", "\"${System.getenv("APP_CENTER_API_KEY")}\"")
+        } else {
+            buildConfigField("String", "API_KEY_HEADER_VALUE", "\"${appProperties['api.key.header.value']}\"")
+            buildConfigField("String", "APP_CENTER_API_KEY", "\"${appProperties['app.center.api.key']}\"")
         }
     }
 
@@ -73,6 +93,11 @@ dependencies {
     kapt 'com.squareup.moshi:moshi-kotlin-codegen:1.14.0'
     implementation 'com.squareup.retrofit2:converter-moshi:2.9.0'
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+
+    //App Center
+    def appCenterSdkVersion = '4.4.5'
+    implementation "com.microsoft.appcenter:appcenter-analytics:${appCenterSdkVersion}"
+    implementation "com.microsoft.appcenter:appcenter-crashes:${appCenterSdkVersion}"
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
