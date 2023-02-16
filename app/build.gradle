@@ -5,6 +5,13 @@ plugins {
     id 'com.google.dagger.hilt.android'
 }
 
+def appProperties = new Properties()
+
+if (rootProject.file("app-settings.properties").exists()) {
+    def appPropertiesFile = rootProject.file("app-settings.properties")
+    appProperties.load(new FileInputStream(appPropertiesFile))
+}
+
 android {
     namespace 'rs.smobile.chucknorrisjokes'
     compileSdk 33
@@ -19,6 +26,19 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary true
+        }
+        def appCenterBuild = System.getenv("APP_CENTER_BUILD")
+
+        if (appCenterBuild != null) {
+            buildConfigField ("boolean", "APP_CENTER_BUILD", "\"${appCenterBuild}\"" ?: "false")
+        }
+
+        if (appCenterBuild) {
+            buildConfigField("String", "API_KEY_HEADER_VALUE", "\"${System.getenv("API_KEY_HEADER_VALUE")}\"")
+            buildConfigField("String", "APP_CENTER_API_KEY", "\"${System.getenv("APP_CENTER_API_KEY")}\"")
+        } else {
+            buildConfigField("String", "API_KEY_HEADER_VALUE", "\"${appProperties['api.key.header.value']}\"")
+            buildConfigField("String", "APP_CENTER_API_KEY", "\"${appProperties['app.center.api.key']}\"")
         }
     }
 

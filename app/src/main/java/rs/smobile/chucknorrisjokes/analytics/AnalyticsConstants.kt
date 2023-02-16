@@ -1,8 +1,10 @@
 package rs.smobile.chucknorrisjokes.analytics
 
+import rs.smobile.chucknorrisjokes.BuildConfig
+
 object AnalyticsConstants {
 
-    const val APP_CENTER_API_KEY = "YOUR APP CENTER API KEY HERE"
+    const val APP_CENTER_API_KEY = BuildConfig.APP_CENTER_API_KEY
 
     const val FETCH_INITIAL_JOKE = "fetch_initial_joke"
     const val FETCH_NEW_JOKE = "fetch_new_joke"
