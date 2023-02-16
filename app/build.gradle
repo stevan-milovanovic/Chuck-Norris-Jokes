@@ -30,7 +30,7 @@ android {
         def appCenterBuild = System.getenv("APP_CENTER_BUILD")
 
         if (appCenterBuild != null) {
-            buildConfigField ("boolean", "APP_CENTER_BUILD", "\"${appCenterBuild}\"" ?: "false")
+            buildConfigField ("boolean", "APP_CENTER_BUILD", "${appCenterBuild}" ?: "false")
         }
 
         if (appCenterBuild) {
