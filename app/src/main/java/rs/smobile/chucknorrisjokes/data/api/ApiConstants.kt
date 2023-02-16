@@ -1,5 +1,7 @@
 package rs.smobile.chucknorrisjokes.data.api
 
+import rs.smobile.chucknorrisjokes.BuildConfig
+
 object ApiConstants {
     const val BASE_URL = "https://matchilling-chuck-norris-jokes-v1.p.rapidapi.com/jokes/"
     const val JOKE_ENDPOINT = "random"
@@ -8,7 +10,7 @@ object ApiConstants {
     const val HOST_HEADER_VALUE = "matchilling-chuck-norris-jokes-v1.p.rapidapi.com"
 
     const val API_KEY_HEADER_NAME = "X-RapidAPI-Key"
-    const val API_KEY_HEADER_VALUE = "YOUR API KEY HERE"
+    const val API_KEY_HEADER_VALUE = BuildConfig.API_KEY_HEADER_VALUE
 
     const val CONTENT_VALUE_HEADER_NAME = "accept"
     const val CONTENT_VALUE_HEADER_VALUE = "application/json"
