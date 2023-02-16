@@ -16,4 +16,11 @@
 
 ### Build status:
 
+#### Dev:
 [![Build status](https://build.appcenter.ms/v0.1/apps/eb4061d9-a314-4b4e-8550-679cdbd13862/branches/dev/badge)](https://appcenter.ms)
+
+#### Test:
+[![Build status](https://build.appcenter.ms/v0.1/apps/eb4061d9-a314-4b4e-8550-679cdbd13862/branches/test/badge)](https://appcenter.ms)
+
+#### Master:
+[![Build status](https://build.appcenter.ms/v0.1/apps/eb4061d9-a314-4b4e-8550-679cdbd13862/branches/master/badge)](https://appcenter.ms)
