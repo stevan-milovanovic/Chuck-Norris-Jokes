@@ -1,4 +1,4 @@
-package rs.smobile.chucknorrisjokes
+package rs.smobile.chucknorrisjokes.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
