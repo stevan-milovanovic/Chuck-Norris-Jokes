@@ -1,8 +1,5 @@
-package rs.smobile.chucknorrisjokes
+package rs.smobile.chucknorrisjokes.ui
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,49 +7,39 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Devices.PIXEL_4
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.microsoft.appcenter.AppCenter
-import com.microsoft.appcenter.analytics.Analytics
-import com.microsoft.appcenter.crashes.Crashes
-import dagger.hilt.android.AndroidEntryPoint
-import rs.smobile.chucknorrisjokes.analytics.AnalyticsConstants.APP_CENTER_API_KEY
+import rs.smobile.chucknorrisjokes.R
 import rs.smobile.chucknorrisjokes.data.api.model.Joke
 import rs.smobile.chucknorrisjokes.ui.theme.ChuckNorrisJokesTheme
+import rs.smobile.chucknorrisjokes.viewmodel.MainUiState
 
-@AndroidEntryPoint
-class MainActivity : ComponentActivity() {
+const val PROGRESS_INDICATOR_TEST_TAG = "main_progress_indicator_test_tag"
+const val JOKE_CARD_TEST_TAG = "joke_card_test_tag"
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        AppCenter.start(application, APP_CENTER_API_KEY, Analytics::class.java, Crashes::class.java)
-
-        setContent {
-            val viewModel = viewModel(modelClass = MainViewModel::class.java)
-            val uiState by viewModel.uiState.collectAsState()
-
-            ChuckNorrisJokesTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    JokeGeneratorSection(
-                        uiState,
-                        viewModel::fetchNewJoke
-                    )
-                }
-            }
+@Composable
+fun MainScreenComposable(
+    uiState: MainUiState,
+    fetchNewJoke: () -> Unit
+) {
+    ChuckNorrisJokesTheme {
+        // A surface container using the 'background' color from the theme
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colorScheme.background
+        ) {
+            JokeGeneratorSection(
+                uiState,
+                fetchNewJoke
+            )
         }
     }
 }
@@ -70,14 +57,15 @@ private fun JokeGeneratorSection(
                 contentScale = ContentScale.FillBounds,
                 alpha = 0.4f
             ),
-        horizontalAlignment = Alignment.CenterHorizontally,
-
-        ) {
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         GenerateJokeButton(onGenerateJokeButtonClick)
         when (uiState) {
             is MainUiState.Failure -> JokeCard(text = uiState.message)
             MainUiState.Loading -> LinearProgressIndicator(
-                modifier = Modifier.padding(top = 20.dp)
+                modifier = Modifier
+                    .padding(top = 20.dp)
+                    .testTag(PROGRESS_INDICATOR_TEST_TAG)
             )
             is MainUiState.Success -> JokeCard(text = uiState.joke?.value)
         }
@@ -94,20 +82,21 @@ private fun GenerateJokeButton(
         shape = RoundedCornerShape(8.dp)
     ) {
         Text(
-            text = "Generate new joke",
+            text = stringResource(R.string.generate_new_joke),
             style = MaterialTheme.typography.headlineSmall
         )
     }
 }
 
 @Composable
-fun JokeCard(
+private fun JokeCard(
     text: String?
 ) {
     ElevatedCard(
         modifier = Modifier
             .padding(horizontal = 40.dp)
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .testTag(JOKE_CARD_TEST_TAG),
         shape = RoundedCornerShape(8.dp)
     ) {
         Text(
@@ -120,9 +109,9 @@ fun JokeCard(
     }
 }
 
-@Preview(showBackground = true, device = PIXEL_4, showSystemUi = true)
+@Preview(showBackground = true, device = Devices.PIXEL_4, showSystemUi = true)
 @Composable
-fun SuccessPreview() {
+private fun SuccessPreview() {
     ChuckNorrisJokesTheme {
         JokeGeneratorSection(
             MainUiState.Success(
@@ -140,9 +129,9 @@ fun SuccessPreview() {
     }
 }
 
-@Preview(showBackground = true, device = PIXEL_4, showSystemUi = true)
+@Preview(showBackground = true, device = Devices.PIXEL_4, showSystemUi = true)
 @Composable
-fun FailurePreview() {
+private fun FailurePreview() {
     ChuckNorrisJokesTheme {
         JokeGeneratorSection(
             MainUiState.Failure("Joke couldn't be fetched.")
@@ -150,9 +139,9 @@ fun FailurePreview() {
     }
 }
 
-@Preview(showBackground = true, device = PIXEL_4, showSystemUi = true)
+@Preview(showBackground = true, device = Devices.PIXEL_4, showSystemUi = true)
 @Composable
-fun LoadingPreview() {
+private fun LoadingPreview() {
     ChuckNorrisJokesTheme {
         JokeGeneratorSection(
             MainUiState.Loading
