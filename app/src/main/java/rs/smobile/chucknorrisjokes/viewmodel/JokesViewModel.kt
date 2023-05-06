@@ -19,20 +19,20 @@ import rs.smobile.chucknorrisjokes.data.repository.JokeRepository
 import rs.smobile.chucknorrisjokes.data.repository.Resource
 import javax.inject.Inject
 
-sealed class MainUiState {
-    class Success(val joke: Joke?) : MainUiState()
-    class Failure(val message: String?) : MainUiState()
-    object Loading : MainUiState()
+sealed class JokeUiState {
+    class Success(val joke: Joke?) : JokeUiState()
+    class Failure(val message: String?) : JokeUiState()
+    object Loading : JokeUiState()
 }
 
 @HiltViewModel
-class MainViewModel @Inject constructor(
+class JokesViewModel @Inject constructor(
     private val jokeRepository: JokeRepository,
     private val analyticsService: AnalyticsService
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow<MainUiState>(MainUiState.Loading)
-    val uiState: StateFlow<MainUiState>
+    private val _uiState = MutableStateFlow<JokeUiState>(JokeUiState.Loading)
+    val uiState: StateFlow<JokeUiState>
         get() = _uiState
 
     init {
@@ -51,15 +51,15 @@ class MainViewModel @Inject constructor(
 
     private fun fetchJoke() {
         viewModelScope.launch {
-            _uiState.value = MainUiState.Loading
+            _uiState.value = JokeUiState.Loading
             when (val response = jokeRepository.getJoke()) {
                 is Resource.Success -> {
                     trackNewJokeSuccess(response.data)
-                    _uiState.value = MainUiState.Success(response.data)
+                    _uiState.value = JokeUiState.Success(response.data)
                 }
                 is Resource.Error -> {
                     trackNewJokeFailure(response.message)
-                    _uiState.value = MainUiState.Failure(response.message)
+                    _uiState.value = JokeUiState.Failure(response.message)
                 }
             }
         }

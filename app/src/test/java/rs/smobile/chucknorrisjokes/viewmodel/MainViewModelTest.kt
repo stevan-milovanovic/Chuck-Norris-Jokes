@@ -23,13 +23,13 @@ internal class MainViewModelTest {
 
     private lateinit var jokeRepository: JokeRepository
     private lateinit var analyticsService: AnalyticsService
-    private lateinit var viewModel: MainViewModel
+    private lateinit var viewModel: JokesViewModel
 
     @Before
     fun setup() {
         jokeRepository = mockk()
         analyticsService = mockk(relaxed = true)
-        viewModel = MainViewModel(jokeRepository, analyticsService)
+        viewModel = JokesViewModel(jokeRepository, analyticsService)
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
