@@ -1,5 +1,7 @@
 # Endless Chuck Norris Jokes To Make You Laugh
 
+![Repo Card](repo-card.png)
+
 ## Example project for Master CI/CD for Android Developers Course
 
 This project is used for mastering App Center as CI/CD for Android projects. While creating it for the purposes of this course, I tried to use the latest and greatest technologies from Android ecosystem. Below you can find project tech stack:
@@ -10,6 +12,7 @@ This project is used for mastering App Center as CI/CD for Android projects. Whi
 - [Dependency injection with Hilt](https://developer.android.com/training/dependency-injection/hilt-android)
 - [Jetpack Compose UI](https://developer.android.com/jetpack/compose)
 - [Material Design 3](https://m3.material.io/develop/android/mdc-android)
+- [Downloadable Fonts](https://developer.android.com/develop/ui/views/text-and-emoji/downloadable-fonts)
 - [Flow](https://developer.android.com/kotlin/flow)
 - [Retrofit](https://square.github.io/retrofit/)
 - [Moshi](https://github.com/square/moshi)
