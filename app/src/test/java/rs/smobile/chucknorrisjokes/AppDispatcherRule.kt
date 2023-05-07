@@ -10,7 +10,7 @@ import org.junit.rules.TestWatcher
 import org.junit.runner.Description
 
 @ExperimentalCoroutinesApi
-class MainDispatcherRule(
+class AppDispatcherRule(
     private val dispatcher: TestDispatcher = StandardTestDispatcher()
 ) : TestWatcher() {
 
