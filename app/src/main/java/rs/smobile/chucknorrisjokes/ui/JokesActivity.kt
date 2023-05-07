@@ -11,10 +11,10 @@ import com.microsoft.appcenter.analytics.Analytics
 import com.microsoft.appcenter.crashes.Crashes
 import dagger.hilt.android.AndroidEntryPoint
 import rs.smobile.chucknorrisjokes.analytics.AnalyticsConstants.APP_CENTER_API_KEY
-import rs.smobile.chucknorrisjokes.viewmodel.MainViewModel
+import rs.smobile.chucknorrisjokes.viewmodel.JokesViewModel
 
 @AndroidEntryPoint
-class MainActivity : ComponentActivity() {
+class JokesActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,9 +22,9 @@ class MainActivity : ComponentActivity() {
         AppCenter.start(application, APP_CENTER_API_KEY, Analytics::class.java, Crashes::class.java)
 
         setContent {
-            val viewModel = viewModel(modelClass = MainViewModel::class.java)
+            val viewModel = viewModel(modelClass = JokesViewModel::class.java)
             val uiState by viewModel.uiState.collectAsState()
-            MainScreenComposable(
+            JokesScreenComposable(
                 uiState,
                 viewModel::fetchNewJoke
             )

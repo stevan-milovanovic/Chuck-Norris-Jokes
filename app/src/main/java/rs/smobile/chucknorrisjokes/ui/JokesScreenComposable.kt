@@ -20,14 +20,14 @@ import androidx.compose.ui.unit.dp
 import rs.smobile.chucknorrisjokes.R
 import rs.smobile.chucknorrisjokes.data.api.model.Joke
 import rs.smobile.chucknorrisjokes.ui.theme.ChuckNorrisJokesTheme
-import rs.smobile.chucknorrisjokes.viewmodel.MainUiState
+import rs.smobile.chucknorrisjokes.viewmodel.JokeUiState
 
 const val PROGRESS_INDICATOR_TEST_TAG = "main_progress_indicator_test_tag"
 const val JOKE_CARD_TEST_TAG = "joke_card_test_tag"
 
 @Composable
-fun MainScreenComposable(
-    uiState: MainUiState,
+fun JokesScreenComposable(
+    uiState: JokeUiState,
     fetchNewJoke: () -> Unit
 ) {
     ChuckNorrisJokesTheme {
@@ -46,7 +46,7 @@ fun MainScreenComposable(
 
 @Composable
 private fun JokeGeneratorSection(
-    uiState: MainUiState,
+    uiState: JokeUiState,
     onGenerateJokeButtonClick: () -> Unit
 ) {
     Column(
@@ -61,13 +61,13 @@ private fun JokeGeneratorSection(
     ) {
         GenerateJokeButton(onGenerateJokeButtonClick)
         when (uiState) {
-            is MainUiState.Failure -> JokeCard(text = uiState.message)
-            MainUiState.Loading -> LinearProgressIndicator(
+            is JokeUiState.Failure -> JokeCard(text = uiState.message)
+            JokeUiState.Loading -> LinearProgressIndicator(
                 modifier = Modifier
                     .padding(top = 20.dp)
                     .testTag(PROGRESS_INDICATOR_TEST_TAG)
             )
-            is MainUiState.Success -> JokeCard(text = uiState.joke?.value)
+            is JokeUiState.Success -> JokeCard(text = uiState.joke?.value)
         }
     }
 }
@@ -114,7 +114,7 @@ private fun JokeCard(
 private fun SuccessPreview() {
     ChuckNorrisJokesTheme {
         JokeGeneratorSection(
-            MainUiState.Success(
+            JokeUiState.Success(
                 Joke(
                     categories = emptyList(),
                     createdAt = "",
@@ -134,7 +134,7 @@ private fun SuccessPreview() {
 private fun FailurePreview() {
     ChuckNorrisJokesTheme {
         JokeGeneratorSection(
-            MainUiState.Failure("Joke couldn't be fetched.")
+            JokeUiState.Failure("Joke couldn't be fetched.")
         ) {}
     }
 }
@@ -144,7 +144,7 @@ private fun FailurePreview() {
 private fun LoadingPreview() {
     ChuckNorrisJokesTheme {
         JokeGeneratorSection(
-            MainUiState.Loading
+            JokeUiState.Loading
         ) {}
     }
 }
