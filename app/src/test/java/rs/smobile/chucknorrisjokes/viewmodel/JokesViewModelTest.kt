@@ -8,18 +8,18 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import rs.smobile.chucknorrisjokes.MainDispatcherRule
+import rs.smobile.chucknorrisjokes.AppDispatcherRule
 import rs.smobile.chucknorrisjokes.analytics.AnalyticsConstants
 import rs.smobile.chucknorrisjokes.analytics.AnalyticsService
 import rs.smobile.chucknorrisjokes.data.api.model.Joke
 import rs.smobile.chucknorrisjokes.data.repository.JokeRepository
 import rs.smobile.chucknorrisjokes.data.repository.Resource
 
-internal class MainViewModelTest {
+internal class JokesViewModelTest {
 
     @ExperimentalCoroutinesApi
     @get:Rule
-    val mainDispatcherRule = MainDispatcherRule()
+    val appDispatcherRule = AppDispatcherRule()
 
     private lateinit var jokeRepository: JokeRepository
     private lateinit var analyticsService: AnalyticsService
@@ -41,8 +41,8 @@ internal class MainViewModelTest {
         advanceUntilIdle()
 
         coVerify { jokeRepository.getJoke() }
-        assert(viewModel.uiState.value is MainUiState.Success)
-        assertEquals(testResource.data, (viewModel.uiState.value as MainUiState.Success).joke)
+        assert(viewModel.uiState.value is JokeUiState.Success)
+        assertEquals(testResource.data, (viewModel.uiState.value as JokeUiState.Success).joke)
         verifyLogNewJokeFetchedEvent(testResource.data)
     }
 
@@ -55,8 +55,8 @@ internal class MainViewModelTest {
         advanceUntilIdle()
 
         coVerify { jokeRepository.getJoke() }
-        assert(viewModel.uiState.value is MainUiState.Failure)
-        assertEquals(testResource.message, (viewModel.uiState.value as MainUiState.Failure).message)
+        assert(viewModel.uiState.value is JokeUiState.Failure)
+        assertEquals(testResource.message, (viewModel.uiState.value as JokeUiState.Failure).message)
         verifyLogNewJokeFetchFailed(testResource.message)
     }
 
@@ -91,22 +91,22 @@ internal class MainViewModelTest {
     }
 
     private fun verifyInitialState() {
-        assertEquals(MainUiState.Loading, viewModel.uiState.value) // Assert on the initial value
+        assertEquals(JokeUiState.Loading, viewModel.uiState.value) // Assert on the initial value
         verify { analyticsService.logEvent(AnalyticsConstants.FETCH_INITIAL_JOKE) }
         coVerify(exactly = 0) { jokeRepository.getJoke() }
     }
 
     private fun verifyFetchJokeFailure(message: String?) {
         coVerify { jokeRepository.getJoke() }
-        assert(viewModel.uiState.value is MainUiState.Failure)
-        assertEquals(message, (viewModel.uiState.value as MainUiState.Failure).message)
+        assert(viewModel.uiState.value is JokeUiState.Failure)
+        assertEquals(message, (viewModel.uiState.value as JokeUiState.Failure).message)
         verifyLogNewJokeFetchFailed(message)
     }
 
     private fun verifyFetchJokeSuccess(joke: Joke?) {
         coVerify { jokeRepository.getJoke() }
-        assert(viewModel.uiState.value is MainUiState.Success)
-        assertEquals(joke, (viewModel.uiState.value as MainUiState.Success).joke)
+        assert(viewModel.uiState.value is JokeUiState.Success)
+        assertEquals(joke, (viewModel.uiState.value as JokeUiState.Success).joke)
         verifyLogNewJokeFetchedEvent(joke)
     }
 
