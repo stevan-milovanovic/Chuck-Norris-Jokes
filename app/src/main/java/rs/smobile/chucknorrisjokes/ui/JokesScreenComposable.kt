@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -72,7 +71,7 @@ private fun GenerateJokeButton(
     ElevatedButton(
         onClick = onClick,
         modifier = Modifier.padding(vertical = 40.dp),
-        shape = RoundedCornerShape(8.dp),
+        shape = MaterialTheme.shapes.small,
         colors = ButtonDefaults.filledTonalButtonColors()
     ) {
         Text(
@@ -91,7 +90,7 @@ private fun JokeCard(
             .padding(horizontal = 40.dp)
             .fillMaxWidth()
             .testTag(JOKE_CARD_TEST_TAG),
-        shape = RoundedCornerShape(8.dp),
+        shape = MaterialTheme.shapes.small,
         colors = CardDefaults.cardColors(
             containerColor = if (uiState is JokeUiState.Success) MaterialTheme.colorScheme.primary
             else MaterialTheme.colorScheme.error,
