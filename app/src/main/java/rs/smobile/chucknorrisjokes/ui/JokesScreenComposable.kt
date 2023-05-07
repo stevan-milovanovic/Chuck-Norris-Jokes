@@ -31,15 +31,10 @@ fun JokesScreenComposable(
     fetchNewJoke: () -> Unit
 ) {
     ChuckNorrisJokesTheme {
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
-        ) {
-            JokeGeneratorSection(
-                uiState,
-                fetchNewJoke
-            )
-        }
+        JokeGeneratorSection(
+            uiState,
+            fetchNewJoke
+        )
     }
 }
 
@@ -50,7 +45,7 @@ private fun JokeGeneratorSection(
 ) {
     Column(
         modifier = Modifier
-            .fillMaxWidth()
+            .fillMaxSize()
             .paint(
                 painterResource(id = R.drawable.liquid_cheese),
                 contentScale = ContentScale.FillBounds,
