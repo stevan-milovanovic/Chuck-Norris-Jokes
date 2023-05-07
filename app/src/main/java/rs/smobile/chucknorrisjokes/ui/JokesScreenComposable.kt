@@ -31,7 +31,6 @@ fun JokesScreenComposable(
     fetchNewJoke: () -> Unit
 ) {
     ChuckNorrisJokesTheme {
-        // A surface container using the 'background' color from the theme
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
@@ -61,13 +60,12 @@ private fun JokeGeneratorSection(
     ) {
         GenerateJokeButton(onGenerateJokeButtonClick)
         when (uiState) {
-            is JokeUiState.Failure -> JokeCard(text = uiState.message)
             JokeUiState.Loading -> LinearProgressIndicator(
                 modifier = Modifier
                     .padding(top = 20.dp)
                     .testTag(PROGRESS_INDICATOR_TEST_TAG)
             )
-            is JokeUiState.Success -> JokeCard(text = uiState.joke?.value)
+            else -> JokeCard(uiState)
         }
     }
 }
@@ -79,7 +77,8 @@ private fun GenerateJokeButton(
     ElevatedButton(
         onClick = onClick,
         modifier = Modifier.padding(vertical = 40.dp),
-        shape = RoundedCornerShape(8.dp)
+        shape = RoundedCornerShape(8.dp),
+        colors = ButtonDefaults.filledTonalButtonColors()
     ) {
         Text(
             text = stringResource(R.string.generate_new_joke),
@@ -90,21 +89,30 @@ private fun GenerateJokeButton(
 
 @Composable
 private fun JokeCard(
-    text: String?
+    uiState: JokeUiState
 ) {
     ElevatedCard(
         modifier = Modifier
             .padding(horizontal = 40.dp)
             .fillMaxWidth()
             .testTag(JOKE_CARD_TEST_TAG),
-        shape = RoundedCornerShape(8.dp)
+        shape = RoundedCornerShape(8.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = if (uiState is JokeUiState.Success) MaterialTheme.colorScheme.primary
+            else MaterialTheme.colorScheme.error,
+            contentColor = MaterialTheme.colorScheme.onPrimary
+        )
     ) {
         Text(
-            text = text ?: "",
+            text = when (uiState) {
+                is JokeUiState.Success -> uiState.joke?.value.orEmpty()
+                is JokeUiState.Failure -> uiState.message.orEmpty()
+                else -> ""
+            },
             modifier = Modifier
                 .padding(horizontal = 20.dp, vertical = 20.dp)
                 .fillMaxWidth(),
-            style = MaterialTheme.typography.titleLarge
+            style = MaterialTheme.typography.titleMedium
         )
     }
 }

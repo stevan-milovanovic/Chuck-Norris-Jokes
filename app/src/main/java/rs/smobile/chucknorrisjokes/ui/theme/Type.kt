@@ -15,7 +15,7 @@ private val provider = GoogleFont.Provider(
     certificates = R.array.com_google_android_gms_fonts_certs
 )
 
-private val fontName = GoogleFont("Lobster")
+private val fontName = GoogleFont("Bungee")
 
 private val fontFamily = FontFamily(
     Font(googleFont = fontName, fontProvider = provider)
@@ -33,6 +33,13 @@ val Typography = Typography(
         fontFamily = fontFamily,
         fontWeight = FontWeight.Normal,
         fontSize = 22.sp,
+        lineHeight = 28.0.sp,
+        letterSpacing = 0.0.sp
+    ),
+    titleMedium = TextStyle(
+        fontFamily = fontFamily,
+        fontWeight = FontWeight.Normal,
+        fontSize = 20.sp,
         lineHeight = 28.0.sp,
         letterSpacing = 0.0.sp
     ),
