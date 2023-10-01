@@ -22,7 +22,7 @@ import javax.inject.Inject
 sealed class JokeUiState {
     class Success(val joke: Joke?) : JokeUiState()
     class Failure(val message: String?) : JokeUiState()
-    object Loading : JokeUiState()
+    data object Loading : JokeUiState()
 }
 
 @HiltViewModel
