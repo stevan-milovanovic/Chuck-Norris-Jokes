@@ -22,7 +22,7 @@ class JokesActivity : ComponentActivity() {
         AppCenter.start(application, APP_CENTER_API_KEY, Analytics::class.java, Crashes::class.java)
 
         setContent {
-            val viewModel = viewModel(modelClass = JokesViewModel::class.java)
+            val viewModel: JokesViewModel = viewModel()
             val uiState by viewModel.uiState.collectAsState()
             JokesScreenComposable(
                 uiState,
