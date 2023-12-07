@@ -1,10 +1,21 @@
 package rs.smobile.chucknorrisjokes.ui
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.*
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -13,6 +24,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -27,12 +40,14 @@ const val JOKE_CARD_TEST_TAG = "joke_card_test_tag"
 @Composable
 fun JokesScreenComposable(
     uiState: JokeUiState,
-    fetchNewJoke: () -> Unit
+    fetchNewJoke: () -> Unit,
+    onJokeCategorySelected: (String) -> Unit
 ) {
     ChuckNorrisJokesTheme {
         JokeGeneratorSection(
             uiState,
-            fetchNewJoke
+            fetchNewJoke,
+            onJokeCategorySelected
         )
     }
 }
@@ -40,7 +55,8 @@ fun JokesScreenComposable(
 @Composable
 private fun JokeGeneratorSection(
     uiState: JokeUiState,
-    onGenerateJokeButtonClick: () -> Unit
+    onGenerateJokeButtonClick: () -> Unit,
+    onJokeCategorySelected: (String) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -54,13 +70,62 @@ private fun JokeGeneratorSection(
     ) {
         GenerateJokeButton(onGenerateJokeButtonClick)
         when (uiState) {
-            JokeUiState.Loading -> LinearProgressIndicator(
+            is JokeUiState.Loading -> LinearProgressIndicator(
                 modifier = Modifier
                     .padding(top = 20.dp)
                     .testTag(PROGRESS_INDICATOR_TEST_TAG)
             )
+
             else -> JokeCard(uiState)
         }
+        LazyVerticalGrid(
+            columns = GridCells.Adaptive(128.dp),
+            modifier = Modifier.padding(top = 8.dp),
+            contentPadding = PaddingValues(
+                start = 12.dp,
+                top = 16.dp,
+                end = 12.dp,
+                bottom = 16.dp
+            ),
+            content = {
+                items(uiState.categories) { category ->
+                    JokeCategory(
+                        category = category,
+                        isSelected = uiState.selectedCategory != null && uiState.selectedCategory == category,
+                        onJokeCategorySelected = onJokeCategorySelected
+                    )
+                }
+            }
+        )
+    }
+}
+
+@Composable
+private fun JokeCategory(
+    category: String,
+    isSelected: Boolean,
+    onJokeCategorySelected: (String) -> Unit
+) {
+    ElevatedCard(
+        modifier = Modifier
+            .padding(4.dp)
+            .fillMaxWidth()
+            .clickable { onJokeCategorySelected(category) },
+        shape = MaterialTheme.shapes.small,
+        colors = CardDefaults.cardColors(
+            containerColor = if (isSelected) MaterialTheme.colorScheme.secondary
+            else MaterialTheme.colorScheme.tertiary,
+            contentColor = MaterialTheme.colorScheme.onPrimary
+        )
+    ) {
+        Text(
+            text = category,
+            fontWeight = FontWeight.Bold,
+            color = if (isSelected) MaterialTheme.colorScheme.onSecondary else
+                MaterialTheme.colorScheme.onTertiary,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(16.dp)
+        )
     }
 }
 
@@ -117,7 +182,7 @@ private fun SuccessPreview() {
     ChuckNorrisJokesTheme {
         JokeGeneratorSection(
             JokeUiState.Success(
-                Joke(
+                joke = Joke(
                     categories = emptyList(),
                     createdAt = "",
                     iconUrl = "",
@@ -125,8 +190,11 @@ private fun SuccessPreview() {
                     updatedAt = "",
                     url = "",
                     value = "Q: Which is heavier, a ton of bricks or a ton of feathers? A: Chuck Norris."
-                )
-            )
+                ),
+                categories = listOf(),
+                selectedCategory = null
+            ),
+            {}
         ) {}
     }
 }
@@ -136,7 +204,11 @@ private fun SuccessPreview() {
 private fun FailurePreview() {
     ChuckNorrisJokesTheme {
         JokeGeneratorSection(
-            JokeUiState.Failure("Joke couldn't be fetched.")
+            JokeUiState.Failure(
+                categories = emptyList(),
+                selectedCategory = null,
+                message = "Joke couldn't be fetched."
+            ), {}
         ) {}
     }
 }
@@ -146,7 +218,15 @@ private fun FailurePreview() {
 private fun LoadingPreview() {
     ChuckNorrisJokesTheme {
         JokeGeneratorSection(
-            JokeUiState.Loading
+            JokeUiState.Loading(categories = emptyList(), selectedCategory = null), {}
         ) {}
+    }
+}
+
+@Preview
+@Composable
+private fun JokeCategoryPreview() {
+    ChuckNorrisJokesTheme {
+        JokeCategory(category = "general", isSelected = false) {}
     }
 }
