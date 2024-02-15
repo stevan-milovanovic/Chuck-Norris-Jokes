@@ -9,7 +9,6 @@ import org.junit.After
 import org.junit.Rule
 import org.junit.Test
 import rs.smobile.chucknorrisjokes.data.api.model.Joke
-import rs.smobile.chucknorrisjokes.viewmodel.JokeUiState
 
 class JokeScreenComposableTest {
 
@@ -28,13 +27,24 @@ class JokeScreenComposableTest {
 
     @Test
     fun checkLoadingStateUi() {
-        setJokeScreenComposableContent(JokeUiState.Loading)
+        setJokeScreenComposableContent(
+            JokeUiState.Loading(
+                categories = emptyList(),
+                selectedCategory = null
+            )
+        )
         verifyProgressIndicatorIsDisplayed()
     }
 
     @Test
     fun checkFailureStateUi() {
-        setJokeScreenComposableContent(JokeUiState.Failure("test error"))
+        setJokeScreenComposableContent(
+            JokeUiState.Failure(
+                categories = emptyList(),
+                selectedCategory = null,
+                message = "test error"
+            )
+        )
         verifyProgressIndicatorDoesNotExist()
         verifyJokeCardIsDisplayed()
     }
@@ -43,11 +53,13 @@ class JokeScreenComposableTest {
     fun checkSuccessStateUi() {
         setJokeScreenComposableContent(
             JokeUiState.Success(
-                Joke(
+                joke = Joke(
                     categories = emptyList(), createdAt = "date",
                     iconUrl = "iconUrl", id = "id", updatedAt = "updatedAt",
                     url = "url", value = "Joke test value"
-                )
+                ),
+                categories = emptyList(),
+                selectedCategory = null
             )
         )
 
@@ -56,7 +68,7 @@ class JokeScreenComposableTest {
     }
 
     private fun setJokeScreenComposableContent(uiState: JokeUiState) {
-        composeTestRule.setContent { JokesScreenComposable(uiState) {} }
+        composeTestRule.setContent { JokesScreenComposable(uiState, {}) {} }
     }
 
     private fun verifyJokeCardIsDisplayed() {
