@@ -24,37 +24,10 @@ import rs.smobile.chucknorrisjokes.analytics.AnalyticsService
 import rs.smobile.chucknorrisjokes.data.api.model.Joke
 import rs.smobile.chucknorrisjokes.data.repository.JokeRepository
 import rs.smobile.chucknorrisjokes.data.repository.Resource
+import rs.smobile.chucknorrisjokes.ui.JokeUiState
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
-
-sealed class JokeUiState(
-    open val categories: List<String>,
-    open val selectedCategory: String?
-) {
-    data class Success(
-        val joke: Joke?,
-        override val categories: List<String>,
-        override val selectedCategory: String?
-    ) : JokeUiState(categories, selectedCategory)
-
-    data class Failure(
-        override val categories: List<String>,
-        override val selectedCategory: String?,
-        val message: String?
-    ) : JokeUiState(categories, selectedCategory)
-
-    data class Loading(
-        override val categories: List<String>,
-        override val selectedCategory: String?
-    ) : JokeUiState(categories, selectedCategory)
-
-    fun copyWithSelectedCategory(selectedCategory: String?): JokeUiState = when (this) {
-        is Failure -> copy(selectedCategory = selectedCategory)
-        is Loading -> copy(selectedCategory = selectedCategory)
-        is Success -> copy(selectedCategory = selectedCategory)
-    }
-}
 
 @HiltViewModel
 class JokesViewModel @Inject constructor(

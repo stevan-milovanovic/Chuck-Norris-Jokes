@@ -16,6 +16,7 @@ import rs.smobile.chucknorrisjokes.analytics.AnalyticsService
 import rs.smobile.chucknorrisjokes.data.api.model.Joke
 import rs.smobile.chucknorrisjokes.data.repository.JokeRepository
 import rs.smobile.chucknorrisjokes.data.repository.Resource
+import rs.smobile.chucknorrisjokes.ui.JokeUiState
 
 internal class JokesViewModelTest {
 

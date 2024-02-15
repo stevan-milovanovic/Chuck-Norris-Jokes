@@ -11,7 +11,9 @@ import rs.smobile.chucknorrisjokes.data.api.ApiConstants.UNAUTHORIZED_HTTP_RESPO
 import rs.smobile.chucknorrisjokes.data.api.JokeApi
 import rs.smobile.chucknorrisjokes.data.api.model.Joke
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class JokeRepository @Inject constructor(
     private val jokeApi: JokeApi
 ) {

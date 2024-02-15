@@ -24,39 +24,32 @@ object ApiModule {
 
     @Provides
     @Singleton
-    fun provideJokeApi(builder: Retrofit.Builder): JokeApi {
-        return builder
-            .build()
-            .create(JokeApi::class.java)
-    }
+    fun provideJokeApi(builder: Retrofit.Builder): JokeApi = builder
+        .build()
+        .create(JokeApi::class.java)
 
     @Provides
     @Singleton
-    fun provideRetrofitBuilder(client: OkHttpClient): Retrofit.Builder {
-        return Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .client(client)
-            .addConverterFactory(MoshiConverterFactory.create())
-    }
+    fun provideRetrofitBuilder(client: OkHttpClient): Retrofit.Builder = Retrofit.Builder()
+        .baseUrl(BASE_URL)
+        .client(client)
+        .addConverterFactory(MoshiConverterFactory.create())
 
     @Provides
     @Singleton
-    fun provideOkHttpClient(headerInterceptor: Interceptor): OkHttpClient {
-        return OkHttpClient.Builder().apply {
+    fun provideOkHttpClient(headerInterceptor: Interceptor): OkHttpClient =
+        OkHttpClient.Builder().apply {
             interceptors().add(headerInterceptor)
         }.build()
-    }
 
     @Provides
     @Singleton
-    fun provideHeaderInterceptor(): Interceptor {
-        return Interceptor { chain ->
-            val requestBuilder = chain.request().newBuilder()
-            requestBuilder.header(HOST_HEADER_NAME, HOST_HEADER_VALUE)
-            requestBuilder.header(API_KEY_HEADER_NAME, API_KEY_HEADER_VALUE)
-            requestBuilder.header(CONTENT_VALUE_HEADER_NAME, CONTENT_VALUE_HEADER_VALUE)
-            return@Interceptor chain.proceed(requestBuilder.build())
-        }
+    fun provideHeaderInterceptor(): Interceptor = Interceptor { chain ->
+        val requestBuilder = chain.request().newBuilder()
+        requestBuilder.header(HOST_HEADER_NAME, HOST_HEADER_VALUE)
+        requestBuilder.header(API_KEY_HEADER_NAME, API_KEY_HEADER_VALUE)
+        requestBuilder.header(CONTENT_VALUE_HEADER_NAME, CONTENT_VALUE_HEADER_VALUE)
+        return@Interceptor chain.proceed(requestBuilder.build())
     }
 
 }
