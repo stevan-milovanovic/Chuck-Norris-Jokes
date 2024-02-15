@@ -5,6 +5,8 @@ import rs.smobile.chucknorrisjokes.BuildConfig
 object ApiConstants {
     const val BASE_URL = "https://matchilling-chuck-norris-jokes-v1.p.rapidapi.com/jokes/"
     const val JOKE_ENDPOINT = "random"
+    const val CATEGORY_QUERY_PARAM_NAME = "category"
+    const val JOKE_CATEGORY_ENDPOINT = "categories"
 
     const val HOST_HEADER_NAME = "X-RapidAPI-Host"
     const val HOST_HEADER_VALUE = "matchilling-chuck-norris-jokes-v1.p.rapidapi.com"

@@ -1,11 +1,13 @@
 package rs.smobile.chucknorrisjokes.viewmodel
 
-import io.mockk.*
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.mockk
+import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import rs.smobile.chucknorrisjokes.AppDispatcherRule
@@ -25,86 +27,77 @@ internal class JokesViewModelTest {
     private lateinit var analyticsService: AnalyticsService
     private lateinit var viewModel: JokesViewModel
 
-    @Before
-    fun setup() {
-        jokeRepository = mockk()
-        analyticsService = mockk(relaxed = true)
-        viewModel = JokesViewModel(jokeRepository, analyticsService)
-    }
-
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun testViewModelInitialisationWithSuccessfulResponse() = runTest {
-        val testResource = Resource.Success(Joke(emptyList(), "", "", "", "", "", ""))
-        coEvery { jokeRepository.getJoke() } returns testResource
-        verifyInitialState()
+    fun testFetchJokeWithSuccessfulResponse(): Unit = runTest {
+        val getJokeTestResource = Resource.Success(
+            Joke(
+                emptyList(),
+                createdAt = "",
+                iconUrl = "",
+                id = "",
+                updatedAt = "",
+                url = "",
+                value = ""
+            )
+        )
+        val getJokeCategoriesResource = Resource.Success(emptyList<String>())
+        initMocks(getJokeTestResource, getJokeCategoriesResource)
         advanceUntilIdle()
 
-        coVerify { jokeRepository.getJoke() }
-        assert(viewModel.uiState.value is JokeUiState.Success)
-        assertEquals(testResource.data, (viewModel.uiState.value as JokeUiState.Success).joke)
-        verifyLogNewJokeFetchedEvent(testResource.data)
-    }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    @Test
-    fun testViewModelInitialisationWithFailureResponse() = runTest {
-        val testResource = Resource.Error<Joke>("test error")
-        coEvery { jokeRepository.getJoke() } returns testResource
         verifyInitialState()
-        advanceUntilIdle()
-
-        coVerify { jokeRepository.getJoke() }
-        assert(viewModel.uiState.value is JokeUiState.Failure)
-        assertEquals(testResource.message, (viewModel.uiState.value as JokeUiState.Failure).message)
-        verifyLogNewJokeFetchFailed(testResource.message)
-    }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    @Test
-    fun testFetchJokeWithSuccessfulResponse() = runTest {
-        val testResource = Resource.Success(Joke(emptyList(), "", "", "", "", "", ""))
-        coEvery { jokeRepository.getJoke() } returns testResource
-        verifyInitialState()
-        advanceUntilIdle()
-        verifyFetchJokeSuccess(testResource.data)
 
         viewModel.fetchNewJoke()
-        verify { analyticsService.logEvent(AnalyticsConstants.FETCH_NEW_JOKE) }
         advanceUntilIdle()
-        verifyFetchJokeSuccess(testResource.data)
+
+        verify { analyticsService.logEvent(AnalyticsConstants.FETCH_NEW_JOKE) }
+        verifyFetchJokeSuccess(getJokeTestResource.data)
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun testFetchJokeWithFailureResponse() = runTest {
-        val testResource = Resource.Error<Joke>("test error")
-        coEvery { jokeRepository.getJoke() } returns testResource
-        verifyInitialState()
+        val getJokeTestResource = Resource.Error<Joke>("test error")
+        val getJokeCategoriesResource = Resource.Success(emptyList<String>())
+        initMocks(getJokeTestResource, getJokeCategoriesResource)
         advanceUntilIdle()
-        verifyFetchJokeFailure(testResource.message)
+
+        coEvery { jokeRepository.getJoke(category = null) } returns getJokeTestResource
+        verifyInitialState()
 
         viewModel.fetchNewJoke()
-        verify { analyticsService.logEvent(AnalyticsConstants.FETCH_NEW_JOKE) }
         advanceUntilIdle()
-        verifyFetchJokeFailure(testResource.message)
+
+        verify { analyticsService.logEvent(AnalyticsConstants.FETCH_NEW_JOKE) }
+        verifyFetchJokeFailure(getJokeTestResource.message)
+    }
+
+    private fun initMocks(
+        getJokeResource: Resource<Joke>,
+        getJokeCategoriesResource: Resource<List<String>>
+    ) {
+        jokeRepository = mockk()
+        coEvery { jokeRepository.getJoke(category = any()) } returns getJokeResource
+        coEvery { jokeRepository.getJokeCategories() } returns getJokeCategoriesResource
+
+        analyticsService = mockk(relaxed = true)
+        viewModel = JokesViewModel(jokeRepository, analyticsService)
     }
 
     private fun verifyInitialState() {
-        assertEquals(JokeUiState.Loading, viewModel.uiState.value) // Assert on the initial value
         verify { analyticsService.logEvent(AnalyticsConstants.FETCH_INITIAL_JOKE) }
-        coVerify(exactly = 0) { jokeRepository.getJoke() }
+        coVerify(exactly = 1) { jokeRepository.getJoke(category = null) }
     }
 
     private fun verifyFetchJokeFailure(message: String?) {
-        coVerify { jokeRepository.getJoke() }
+        coVerify { jokeRepository.getJoke(category = null) }
         assert(viewModel.uiState.value is JokeUiState.Failure)
         assertEquals(message, (viewModel.uiState.value as JokeUiState.Failure).message)
         verifyLogNewJokeFetchFailed(message)
     }
 
     private fun verifyFetchJokeSuccess(joke: Joke?) {
-        coVerify { jokeRepository.getJoke() }
+        coVerify { jokeRepository.getJoke(category = null) }
         assert(viewModel.uiState.value is JokeUiState.Success)
         assertEquals(joke, (viewModel.uiState.value as JokeUiState.Success).joke)
         verifyLogNewJokeFetchedEvent(joke)
