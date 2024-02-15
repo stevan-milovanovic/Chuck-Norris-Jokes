@@ -26,7 +26,8 @@ class JokesActivity : ComponentActivity() {
             val uiState by viewModel.uiState.collectAsState()
             JokesScreenComposable(
                 uiState,
-                viewModel::fetchNewJoke
+                viewModel::fetchNewJoke,
+                viewModel::toggleJokeCategory
             )
         }
     }
