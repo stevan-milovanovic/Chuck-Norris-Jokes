@@ -9,7 +9,6 @@ import org.junit.After
 import org.junit.Rule
 import org.junit.Test
 import rs.smobile.chucknorrisjokes.data.api.model.Joke
-import rs.smobile.chucknorrisjokes.viewmodel.JokeUiState
 
 class JokeScreenComposableTest {
 

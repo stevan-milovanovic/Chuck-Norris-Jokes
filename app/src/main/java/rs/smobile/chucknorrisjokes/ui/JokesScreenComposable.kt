@@ -32,7 +32,6 @@ import androidx.compose.ui.unit.dp
 import rs.smobile.chucknorrisjokes.R
 import rs.smobile.chucknorrisjokes.data.api.model.Joke
 import rs.smobile.chucknorrisjokes.ui.theme.ChuckNorrisJokesTheme
-import rs.smobile.chucknorrisjokes.viewmodel.JokeUiState
 
 const val PROGRESS_INDICATOR_TEST_TAG = "main_progress_indicator_test_tag"
 const val JOKE_CARD_TEST_TAG = "joke_card_test_tag"
@@ -118,14 +117,20 @@ private fun JokeCategory(
             contentColor = MaterialTheme.colorScheme.onPrimary
         )
     ) {
-        Text(
-            text = category,
-            fontWeight = FontWeight.Bold,
-            color = if (isSelected) MaterialTheme.colorScheme.onSecondary else
-                MaterialTheme.colorScheme.onTertiary,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.padding(16.dp)
-        )
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = category,
+                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.bodyLarge,
+                color = if (isSelected) MaterialTheme.colorScheme.onSecondary else
+                    MaterialTheme.colorScheme.onTertiary,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(vertical = 16.dp, horizontal = 8.dp)
+            )
+        }
     }
 }
 
