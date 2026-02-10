@@ -1,5 +1,6 @@
 package rs.smobile.chucknorrisjokes.ui
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -15,6 +16,7 @@ import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -29,6 +31,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.delay
 import rs.smobile.chucknorrisjokes.R
 import rs.smobile.chucknorrisjokes.data.api.model.Joke
 import rs.smobile.chucknorrisjokes.ui.theme.ChuckNorrisJokesTheme
@@ -43,7 +46,7 @@ fun JokesScreenComposable(
     onJokeCategorySelected: (String) -> Unit
 ) {
     ChuckNorrisJokesTheme {
-        JokeGeneratorSection(
+        JokeGeneratorScreen(
             uiState,
             fetchNewJoke,
             onJokeCategorySelected
@@ -52,50 +55,53 @@ fun JokesScreenComposable(
 }
 
 @Composable
-private fun JokeGeneratorSection(
+private fun JokeGeneratorScreen(
     uiState: JokeUiState,
     onGenerateJokeButtonClick: () -> Unit,
     onJokeCategorySelected: (String) -> Unit
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .paint(
-                painterResource(id = R.drawable.liquid_cheese),
-                contentScale = ContentScale.FillBounds,
-                alpha = 0.4f
-            ),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        GenerateJokeButton(onGenerateJokeButtonClick)
-        when (uiState) {
-            is JokeUiState.Loading -> LinearProgressIndicator(
-                modifier = Modifier
-                    .padding(top = 20.dp)
-                    .testTag(PROGRESS_INDICATOR_TEST_TAG)
-            )
+    Scaffold { innerPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .paint(
+                    painterResource(id = R.drawable.liquid_cheese),
+                    contentScale = ContentScale.FillBounds,
+                    alpha = 0.4f
+                )
+                .padding(innerPadding),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            GenerateJokeButton(onGenerateJokeButtonClick)
+            when (uiState) {
+                is JokeUiState.Loading -> LinearProgressIndicator(
+                    modifier = Modifier
+                        .padding(top = 20.dp)
+                        .testTag(PROGRESS_INDICATOR_TEST_TAG)
+                )
 
-            else -> JokeCard(uiState)
-        }
-        LazyVerticalGrid(
-            columns = GridCells.Adaptive(128.dp),
-            modifier = Modifier.padding(top = 8.dp),
-            contentPadding = PaddingValues(
-                start = 12.dp,
-                top = 16.dp,
-                end = 12.dp,
-                bottom = 16.dp
-            ),
-            content = {
-                items(uiState.categories) { category ->
-                    JokeCategory(
-                        category = category,
-                        isSelected = uiState.selectedCategory != null && uiState.selectedCategory == category,
-                        onJokeCategorySelected = onJokeCategorySelected
-                    )
-                }
+                else -> JokeCard(uiState)
             }
-        )
+            LazyVerticalGrid(
+                columns = GridCells.Adaptive(128.dp),
+                modifier = Modifier.padding(top = 8.dp),
+                contentPadding = PaddingValues(
+                    start = 12.dp,
+                    top = 16.dp,
+                    end = 12.dp,
+                    bottom = 16.dp
+                ),
+                content = {
+                    items(uiState.categories) { category ->
+                        JokeCategory(
+                            category = category,
+                            isSelected = uiState.selectedCategory != null && uiState.selectedCategory == category,
+                            onJokeCategorySelected = onJokeCategorySelected
+                        )
+                    }
+                }
+            )
+        }
     }
 }
 
@@ -185,7 +191,7 @@ private fun JokeCard(
 @Composable
 private fun SuccessPreview() {
     ChuckNorrisJokesTheme {
-        JokeGeneratorSection(
+        JokeGeneratorScreen(
             JokeUiState.Success(
                 joke = Joke(
                     categories = emptyList(),
@@ -208,7 +214,7 @@ private fun SuccessPreview() {
 @Composable
 private fun FailurePreview() {
     ChuckNorrisJokesTheme {
-        JokeGeneratorSection(
+        JokeGeneratorScreen(
             JokeUiState.Failure(
                 categories = emptyList(),
                 selectedCategory = null,
@@ -222,7 +228,7 @@ private fun FailurePreview() {
 @Composable
 private fun LoadingPreview() {
     ChuckNorrisJokesTheme {
-        JokeGeneratorSection(
+        JokeGeneratorScreen(
             JokeUiState.Loading(categories = emptyList(), selectedCategory = null), {}
         ) {}
     }
